@@ -1,0 +1,12 @@
+{
+  "display_name": "Phone UI - Texts & Social",
+  "loading_order": 10,
+  "requires": [],
+  "optional": [],
+  "js": "index.js",
+  "css": "style.css",
+  "author": "Custom",
+  "version": "2.1.0",
+  "homePage": "",
+  "auto_update": false
+}

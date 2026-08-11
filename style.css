@@ -1,0 +1,1676 @@
+#phoneui-togglewrap {
+  position: fixed !important;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  z-index: 2147483000 !important;
+}
+
+/* On mobile, SillyTavern's own send/compose bar occupies the bottom
+   of the screen (and can be quite tall with the virtual keyboard
+   open). Anchoring further up from the very bottom keeps it clear of
+   that, while still sitting low on the screen rather than dead
+   center. */
+@media (max-width: 768px) {
+  #phoneui-togglewrap {
+    top: auto;
+    bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+    right: calc(10px + env(safe-area-inset-right, 0px));
+    transform: none;
+  }
+}
+
+#phoneui-togglebtn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  cursor: grab;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+#phoneui-togglebtn:active {
+  cursor: grabbing;
+}
+
+#phoneui-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ed4956;
+  color: #fff;
+  font-size: 11px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid #fff;
+}
+
+#phoneui-panel {
+  position: fixed;
+  /* Fallback position only - positionPanelNearButton() in index.js
+     sets the real left/top inline (as !important) every time the
+     panel opens, anchoring it to wherever the toggle button actually
+     is instead of a fixed spot. These values just cover the instant
+     before that JS has run. */
+  bottom: calc(160px + env(safe-area-inset-bottom, 0px));
+  right: calc(16px + env(safe-area-inset-right, 0px));
+  z-index: 2147483001 !important;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 200px);
+}
+
+.phoneui-hidden {
+  display: none !important;
+}
+
+.phoneui-frame {
+  width: min(320px, calc(100vw - 32px));
+  height: min(560px, calc(100vh - 200px));
+  background: #ffffff;
+  border-radius: 28px;
+  border: 6px solid #000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, sans-serif;
+  color: #262626;
+  position: relative;
+}
+
+.phoneui-statusbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 16px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #262626;
+  background: #ffffff;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.phoneui-statusbar:active {
+  cursor: grabbing;
+}
+
+.phoneui-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  position: relative;
+}
+
+/* Bottom chrome bar holding the single home button - like a real
+   phone's home indicator/button, always present regardless of which
+   app is open, so there's always a way back to the icon grid. */
+.phoneui-homebar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  background: #ffffff;
+  border-top: 1px solid #dbdbdb;
+}
+
+.phoneui-homebtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid #dbdbdb;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.phoneui-homebtn:hover {
+  border-color: #0095f6;
+}
+
+.phoneui-homebtn:active {
+  transform: scale(0.92);
+}
+
+.phoneui-homescreen {
+  flex: 1;
+  padding: 20px 16px;
+  background: #ffffff;
+}
+
+.phoneui-homeprofile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 20px;
+  background: #fafafa;
+  border: 1px solid #efefef;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.phoneui-homeprofile:hover {
+  background: #f2f2f2;
+}
+
+.phoneui-homeprofiletext {
+  flex: 1;
+  min-width: 0;
+}
+
+.phoneui-homeprofilename {
+  font-size: 14px;
+  font-weight: 700;
+  color: #262626;
+}
+
+.phoneui-homeprofilesub {
+  font-size: 11px;
+  color: #8e8e8e;
+}
+
+.phoneui-homeprofile > .fa-chevron-right {
+  color: #c7c7c7;
+  font-size: 12px;
+}
+
+.phoneui-homegrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 12px;
+}
+
+.phoneui-appicon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.phoneui-appicon-glyph {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.phoneui-appicon-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ed4956;
+  color: #fff;
+  font-size: 10px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  border: 2px solid #fff;
+}
+
+.phoneui-appicon-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.phoneui-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.phoneui-listitem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #efefef;
+  cursor: pointer;
+}
+
+.phoneui-listitem:hover {
+  background: #fafafa;
+}
+
+.phoneui-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8a3ab9, #e95950, #fccc63);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.phoneui-avatarimg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.phoneui-listtext {
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.phoneui-listname {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.phoneui-listphone {
+  font-size: 12px;
+  color: #8e8e8e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.phoneui-copynumber {
+  color: #8e8e8e;
+  font-size: 14px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.phoneui-copynumber:hover {
+  color: #262626;
+}
+
+.phoneui-copynumber.phoneui-copied {
+  color: #4caf50;
+}
+
+.phoneui-blocktoggle {
+  color: #8e8e8e;
+  font-size: 14px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.phoneui-blocktoggle:hover {
+  color: #262626;
+}
+
+.phoneui-editnickname {
+  color: #8e8e8e;
+  font-size: 13px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.phoneui-editnickname:hover {
+  color: #262626;
+}
+
+.phoneui-addcontacthint {
+  padding: 0 14px 6px;
+}
+
+.phoneui-blocktoggle.phoneui-blocked,
+.phoneui-threadheaderactions i.phoneui-blocked {
+  color: #ed4956;
+}
+
+.phoneui-threadheaderactions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.phoneui-blockednotice {
+  padding: 12px 14px;
+  border-top: 1px solid #efefef;
+  font-size: 12px;
+  color: #8e8e8e;
+  text-align: center;
+}
+
+.phoneui-blockednotice button {
+  margin-top: 6px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background: #0095f6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.phoneui-listpreview {
+  font-size: 12px;
+  color: #8e8e8e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.phoneui-threadheader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #efefef;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.phoneui-threadheader i {
+  cursor: pointer;
+  color: #0095f6;
+}
+
+.phoneui-messages {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+}
+
+.phoneui-bubble {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.phoneui-bubble-npc {
+  align-self: flex-start;
+  background: #efefef;
+  color: #262626;
+  border-bottom-left-radius: 4px;
+}
+
+.phoneui-bubble-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #4facfe 0%, #a86ee0 100%);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.phoneui-inputrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid #efefef;
+}
+
+.phoneui-inputrow input {
+  flex: 1;
+  background: #efefef;
+  border: none;
+  border-radius: 18px;
+  padding: 8px 14px;
+  color: #262626;
+  font-size: 13px;
+}
+
+.phoneui-inputrow i {
+  background: #0095f6;
+  color: #fff;
+  border-radius: 50%;
+  padding: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+#phoneui-textgifbtn,
+#phoneui-discordgifbtn {
+  background: #efefef;
+  color: #262626;
+}
+
+.phoneui-msggif {
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  margin-bottom: 4px;
+}
+
+.phoneui-postgif {
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.phoneui-empty {
+  padding: 24px;
+  text-align: center;
+  color: #8e8e8e;
+  font-size: 13px;
+}
+
+.phoneui-feed {
+  display: flex;
+  flex-direction: column;
+}
+
+.phoneui-post {
+  border-bottom: 1px solid #efefef;
+  padding: 12px 14px;
+}
+
+.phoneui-postheader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.phoneui-postauthor {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.phoneui-postheader-follow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.phoneui-followerline {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: #8e8e8e;
+  white-space: nowrap;
+}
+
+.phoneui-verified {
+  color: #0095f6;
+  font-size: 10px;
+}
+
+.phoneui-followbtn {
+  border: none;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #0095f6;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.phoneui-followbtn:hover {
+  background: #1877c9;
+}
+
+.phoneui-followbtn.phoneui-following {
+  background: #efefef;
+  color: #262626;
+  border: none;
+}
+
+.phoneui-followbtn-sm {
+  padding: 4px 10px;
+  font-size: 10px;
+  margin-right: 2px;
+}
+
+.phoneui-listfollowers {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: #8e8e8e;
+}
+
+/* Clickable avatar-only wrapper used in the Contacts/Texts list to
+   open a profile page without also triggering the row's own click
+   (opening a thread) - only the avatar circle is the profile target
+   there, so tapping the name/preview text still opens the thread
+   like before. An unresolved (unknown-number) contact has nothing to
+   show a profile for, so it skips the data-openprofile attribute
+   entirely and stays plain (no pointer cursor, no listener) rather
+   than looking clickable and doing nothing. */
+.phoneui-avataropenprofile {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.phoneui-avataropenprofile[data-openprofile] {
+  cursor: pointer;
+}
+
+/* Wraps avatar+name together where there's no competing row click to
+   protect against (thread header, Feed post header) - name text
+   underlines on hover as a discoverability hint. Only clickable when
+   data-openprofile is actually present (see phoneui-avataropenprofile
+   above for why an unresolved number skips it). */
+.phoneui-listidentity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.phoneui-listidentity[data-openprofile] {
+  cursor: pointer;
+}
+
+.phoneui-postheader-identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.phoneui-postheader-identity:hover .phoneui-postauthor,
+.phoneui-listidentity[data-openprofile]:hover .phoneui-listname {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------- */
+/* Profile page                                                  */
+/* ------------------------------------------------------------- */
+
+.phoneui-profile {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.phoneui-profiletop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 16px;
+  border-bottom: 1px solid #efefef;
+  gap: 6px;
+}
+
+.phoneui-avatar-lg {
+  width: 76px;
+  height: 76px;
+  min-width: 76px;
+  font-size: 26px;
+  margin-bottom: 4px;
+}
+
+.phoneui-profilename {
+  font-size: 17px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.phoneui-profilesub {
+  font-size: 12px;
+  color: #8e8e8e;
+}
+
+.phoneui-profilestats {
+  display: flex;
+  gap: 18px;
+  font-size: 13px;
+  color: #8e8e8e;
+  margin-top: 4px;
+}
+
+.phoneui-profilestats b {
+  color: #262626;
+}
+
+.phoneui-profilebio {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #262626;
+  max-width: 320px;
+  margin-top: 4px;
+  white-space: pre-wrap;
+}
+
+.phoneui-profileactions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.phoneui-profilemsgbtn {
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: transparent;
+  color: #262626;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.phoneui-profilemsgbtn:hover {
+  background: #fafafa;
+}
+
+.phoneui-profileposts {
+  display: flex;
+  flex-direction: column;
+}
+
+.phoneui-postcaption {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.phoneui-tag {
+  color: #00376b;
+}
+
+.phoneui-mention {
+  color: #00376b;
+  font-weight: 600;
+}
+
+.phoneui-postactions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #262626;
+  margin-bottom: 6px;
+}
+
+.phoneui-like {
+  cursor: pointer;
+  color: #262626;
+}
+
+.phoneui-liked {
+  color: #ed4956;
+}
+
+.phoneui-repost {
+  cursor: pointer;
+  color: #262626;
+  margin-left: 4px;
+}
+
+.phoneui-repost:hover {
+  color: #00875a;
+}
+
+.phoneui-repostlabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: #8e8e8e;
+  margin-bottom: 6px;
+}
+
+.phoneui-repostlabel i {
+  margin-right: 4px;
+}
+
+.phoneui-repostcaption {
+  font-size: 12px;
+  color: #262626;
+  background: #efefef;
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin: -2px 0 8px;
+}
+
+.phoneui-comment {
+  font-size: 12px;
+  color: #262626;
+  margin: 2px 0;
+}
+
+.phoneui-commentrow {
+  margin-top: 6px;
+}
+
+.phoneui-commentinput {
+  width: 100%;
+  background: #efefef;
+  border: none;
+  border-radius: 12px;
+  padding: 6px 10px;
+  color: #262626;
+  font-size: 12px;
+}
+
+.phoneui-commentrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.phoneui-commentsend {
+  cursor: pointer;
+  color: #0095f6;
+  font-weight: 600;
+  font-size: 13px;
+  flex: none;
+}
+
+.phoneui-commentsend:hover {
+  color: #00376b;
+}
+
+.phoneui-commentreplytag {
+  color: #00376b;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.phoneui-postviews {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #8e8e8e;
+}
+
+.phoneui-feedsort {
+  display: flex;
+  gap: 16px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #efefef;
+}
+
+.phoneui-feedsort-opt {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8e8e8e;
+  cursor: pointer;
+  padding-bottom: 4px;
+}
+
+.phoneui-feedsort-active {
+  color: #262626;
+  border-bottom: 2px solid #262626;
+}
+
+.phoneui-addcontact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #efefef;
+}
+
+.phoneui-addcontact input {
+  flex: 1;
+  background: #efefef;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #262626;
+  font-size: 13px;
+}
+
+.phoneui-addcontact i {
+  background: #0095f6;
+  color: #fff;
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.phoneui-compose {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.phoneui-compose textarea {
+  background: #efefef;
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  color: #262626;
+  font-size: 13px;
+  min-height: 100px;
+  resize: none;
+}
+
+.phoneui-compose button {
+  background: #0095f6;
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.phoneui-composerow {
+  display: flex;
+  gap: 8px;
+}
+
+.phoneui-composerow button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+#phoneui-composegifbtn {
+  background: #efefef;
+  color: #262626;
+}
+
+.phoneui-composegifpreview {
+  position: relative;
+  align-self: flex-start;
+}
+
+.phoneui-composegifpreview img {
+  max-width: 160px;
+  max-height: 120px;
+  border-radius: 10px;
+  display: block;
+}
+
+.phoneui-composegifpreview i {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ed4956;
+  color: #fff;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.phoneui-mentionlist {
+  position: absolute;
+  bottom: 60px;
+  left: 14px;
+  right: 14px;
+  background: #ffffff;
+  border: 1px solid #dbdbdb;
+  border-radius: 10px;
+  max-height: 140px;
+  overflow-y: auto;
+  z-index: 2;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.phoneui-mentionopt {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #262626;
+  cursor: pointer;
+}
+
+.phoneui-mentionopt:hover {
+  background: #f2f2f2;
+}
+
+.phoneui-invites {
+  padding: 10px 14px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.phoneui-invitecard {
+  background: #23272a;
+  border: 1px solid #3a3f44;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.phoneui-invitetitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.phoneui-invitetitle i {
+  color: #5865f2;
+  margin-right: 4px;
+}
+
+.phoneui-invitemsg {
+  font-size: 12px;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+
+.phoneui-inviteactions {
+  display: flex;
+  gap: 8px;
+}
+
+.phoneui-inviteactions button {
+  flex: 1;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 0;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.phoneui-inviteaccept {
+  background: #3ba55c;
+  color: #fff;
+}
+
+.phoneui-invitedecline {
+  background: #4f545c;
+  color: #fff;
+}
+
+.phoneui-serverlist {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.phoneui-serveritem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.phoneui-serveritem:hover {
+  background: #f2f2f2;
+}
+
+.phoneui-serveritem .phoneui-avatar {
+  background: #5865f2;
+  color: #fff;
+  border-radius: 16px;
+}
+
+.phoneui-channellist {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+}
+
+.phoneui-channelitem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #262626;
+  cursor: pointer;
+}
+
+.phoneui-channelitem i {
+  font-size: 12px;
+  color: #8e8e8e;
+}
+
+.phoneui-channelitem:hover {
+  background: #f2f2f2;
+  color: #262626;
+}
+
+.phoneui-dmsg {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.phoneui-avatar-sm {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  font-size: 11px;
+}
+
+.phoneui-dauthor {
+  font-size: 12px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.phoneui-dmsg-user .phoneui-dauthor {
+  color: #5865f2;
+}
+
+.phoneui-dtext {
+  font-size: 13px;
+  color: #262626;
+  line-height: 1.4;
+}
+
+#phoneui-notifications {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 300px;
+}
+
+.phoneui-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #e6e6e6;
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  animation: phoneui-slide-in 0.2s ease-out;
+}
+
+@keyframes phoneui-slide-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.phoneui-toast-icon {
+  color: #0095f6;
+  font-size: 16px;
+  margin-top: 2px;
+}
+
+.phoneui-toast-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.phoneui-toast-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.phoneui-toast-body {
+  font-size: 12px;
+  color: #8e8e8e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.phoneui-toast-close {
+  color: #8e8e8e;
+  font-size: 12px;
+  padding: 2px;
+}
+
+.phoneui-toast-close:hover {
+  color: #262626;
+}
+
+/* Notifications center (Notifications tab, not the phone-lock-style
+   toast popups above) */
+.phoneui-notiflist {
+  display: flex;
+  flex-direction: column;
+}
+
+.phoneui-notif-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #efefef;
+  cursor: pointer;
+}
+
+.phoneui-notif-item:hover {
+  background: #fafafa;
+}
+
+.phoneui-notif-unread {
+  background: rgba(0, 149, 246, 0.06);
+}
+
+.phoneui-notif-unread::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #0095f6;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+
+.phoneui-notif-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.phoneui-notif-icon-wrap {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 50%;
+  background: #efefef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.phoneui-notif-typeicon {
+  font-size: 11px;
+}
+
+.phoneui-notif-typeicon.phoneui-notif-follow {
+  color: #0095f6;
+}
+
+.phoneui-notif-typeicon.phoneui-notif-like {
+  color: #ed4956;
+}
+
+.phoneui-notif-typeicon.phoneui-notif-comment {
+  color: #f77737;
+}
+
+.phoneui-notif-typeicon.phoneui-notif-mention {
+  color: #f77737;
+}
+
+.phoneui-notif-typeicon.phoneui-notif-repost {
+  color: #3c8a5c;
+}
+
+.phoneui-notif-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.phoneui-notif-extra {
+  font-size: 12px;
+  color: #8e8e8e;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.phoneui-notif-time {
+  font-size: 11px;
+  color: #8e8e8e;
+  white-space: nowrap;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+/* GIF / meme picker overlay */
+.phoneui-gifpicker {
+  position: absolute;
+  inset: 0;
+  bottom: 56px; /* leave room for the input row underneath */
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  z-index: 3;
+}
+
+.phoneui-gifpickerhead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #efefef;
+}
+
+.phoneui-gifpickerhead i {
+  cursor: pointer;
+  color: #0095f6;
+}
+
+.phoneui-gifpickerhead input {
+  flex: 1;
+  background: #efefef;
+  border: none;
+  border-radius: 18px;
+  padding: 8px 14px;
+  color: #262626;
+  font-size: 13px;
+}
+
+.phoneui-gifquick {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  overflow-x: auto;
+  border-bottom: 1px solid #efefef;
+}
+
+.phoneui-gifquickchip {
+  flex-shrink: 0;
+  background: #efefef;
+  border-radius: 14px;
+  padding: 6px 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.phoneui-gifquickchip:hover {
+  background: #dbdbdb;
+}
+
+.phoneui-gifgrid {
+  flex: 1;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px;
+  align-content: start;
+}
+
+.phoneui-gifoption {
+  width: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
+.phoneui-gifoption:hover {
+  outline: 2px solid #0095f6;
+}
+
+/* Stories strip (Feed tab) */
+.phoneui-stories {
+  display: flex;
+  gap: 12px;
+  padding: 10px 14px;
+  overflow-x: auto;
+  border-bottom: 1px solid #efefef;
+}
+
+.phoneui-story {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 56px;
+}
+
+.phoneui-story-ring {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(45deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phoneui-story-ring .phoneui-avatar {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border: 2px solid #fff;
+}
+
+.phoneui-story-seen {
+  background: #dbdbdb;
+}
+
+.phoneui-story span {
+  font-size: 10px;
+  color: #8e8e8e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 56px;
+}
+
+/* Story viewer (full-body overlay, like the GIF picker) */
+.phoneui-storyviewer {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  z-index: 4;
+}
+
+.phoneui-storyprogress {
+  display: flex;
+  gap: 4px;
+  padding: 8px 8px 0;
+}
+
+.phoneui-storyprogressbar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.phoneui-storyprogressfill {
+  height: 100%;
+  width: 0%;
+  background: #fff;
+}
+
+.phoneui-storyprogressdone {
+  width: 100%;
+}
+
+.phoneui-storyprogressactive {
+  width: 100%;
+  animation: phoneui-story-fill linear;
+  animation-duration: 5s;
+}
+
+@keyframes phoneui-story-fill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.phoneui-storyheader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  color: #fff;
+}
+
+.phoneui-storyheader span {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.phoneui-storyheader i {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.phoneui-storybody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+  text-align: center;
+}
+
+.phoneui-storybody img {
+  max-width: 100%;
+  max-height: 70%;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.phoneui-storycaption {
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.phoneui-storytap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+}
+
+.phoneui-storytap-left {
+  left: 0;
+  cursor: pointer;
+}
+
+.phoneui-storytap-right {
+  right: 0;
+  cursor: pointer;
+}
+
+.phoneui-storyreply {
+  border-top: none;
+  padding: 8px 12px 12px;
+}
+
+/* Texts tab: group threads */
+.phoneui-textsheader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid #efefef;
+  font-size: 13px;
+  font-weight: 700;
+  color: #262626;
+}
+
+.phoneui-textsheader i {
+  cursor: pointer;
+  color: #0095f6;
+  font-size: 15px;
+}
+
+.phoneui-groupavatar {
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.phoneui-threadheadertext {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.phoneui-threadheadersub {
+  font-size: 11px;
+  font-weight: 400;
+  color: #8e8e8e;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fake "typing..." indicator - a bubble styled like an NPC message
+   but holding three bouncing dots instead of text, shown while a
+   [TEXT:]/[GROUPTEXT:] reply is "in progress" before it lands. */
+.phoneui-typing {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.phoneui-typingdots {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 12px;
+}
+
+.phoneui-typingdots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8e8e8e;
+  display: inline-block;
+  animation: phoneui-typingbounce 1.2s infinite ease-in-out both;
+}
+
+.phoneui-typingdots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.phoneui-typingdots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes phoneui-typingbounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.phoneui-typingsub {
+  color: #0095f6;
+}
+
+.phoneui-typingpreview {
+  color: #0095f6;
+  font-style: italic;
+}
+
+.phoneui-receipt {
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: #8e8e8e;
+  padding: 0 4px;
+  margin-top: -2px;
+}
+
+.phoneui-receipt i {
+  font-size: 9px;
+}
+
+.phoneui-bubblesender {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0095f6;
+  margin-bottom: 2px;
+}
+
+.phoneui-groupmemberitem {
+  justify-content: space-between;
+}
+
+.phoneui-groupmembercheck {
+  color: #0095f6;
+  font-size: 16px;
+}
+
+/* Settings drawer (Extensions panel) */
+#phoneui-settings-drawer .inline-drawer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.phoneui-settings-hint {
+  font-size: 12px;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+.phoneui-settings-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ddd;
+  margin-top: 4px;
+}
+
+.phoneui-settings-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.phoneui-personaphoto-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.phoneui-personaphoto-row .phoneui-avatar {
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+}
